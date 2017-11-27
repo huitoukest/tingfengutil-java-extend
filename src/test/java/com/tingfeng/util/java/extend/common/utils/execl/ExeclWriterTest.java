@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.Test;
+
 public class ExeclWriterTest {
 	
 	/** 
@@ -16,7 +18,7 @@ public class ExeclWriterTest {
 	public static void main(String[] args) throws IOException {
 	   new ExeclWriterTest().test();
     }  
-
+	@Test
 	public void test()  throws IOException {
 		 String path = "E:/test.xlsx";	    
 		    File file = new File("E:/dest.xlsx");
