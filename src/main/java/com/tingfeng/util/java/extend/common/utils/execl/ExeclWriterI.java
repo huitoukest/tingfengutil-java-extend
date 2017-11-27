@@ -3,6 +3,8 @@ package com.tingfeng.util.java.extend.common.utils.execl;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Workbook;
+
 public interface ExeclWriterI {
 	public void startWriteData(String sheetName) throws IOException;  
 	public void writeData(List<?> mapList,int startRowNumber) throws IOException;  
@@ -25,4 +27,6 @@ public interface ExeclWriterI {
 	 * @param rowData
 	 */
 	public void insertDataToExeclCell(int rowNumber,int columnNumber,Object rowData) throws IOException;
+	
+	public Workbook getWorkbook();
 }

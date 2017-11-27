@@ -2,12 +2,15 @@ package com.tingfeng.util.java.extend.common.utils.execl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -26,18 +29,24 @@ public class ExcelWriterHelperBySXSSF implements ExeclWriterI{
     /**
      * 内存中驻留的数据行值
      */
-	public  int rowAccessWindowSize = 200;
-
-	private File destFile;
+	public  int rowAccessWindowSize = 400;
+	public static final String defaultSheet = "Sheet1";
+	//private File templateFile;
     private SXSSFWorkbook sxssfWorkbook=null;
     private SXSSFSheet sxssfSheet=null;
+    private OutputStream destFileStream;
+    private InputStream templateFileStream;
 	
-    public ExcelWriterHelperBySXSSF(String filePath){
-        this(new File(filePath));
+    public ExcelWriterHelperBySXSSF(String templateFilePath,OutputStream destFileStream) throws FileNotFoundException{
+        this(new File(templateFilePath),destFileStream);
     }
     
-	public ExcelWriterHelperBySXSSF(File destFile){
-        this.destFile=destFile;
+	public ExcelWriterHelperBySXSSF(File templateFile,OutputStream destFileStream) throws FileNotFoundException{
+        this(new FileInputStream(templateFile),destFileStream);
+    }
+	public ExcelWriterHelperBySXSSF(InputStream templateFileStream,OutputStream destFileStream) throws FileNotFoundException{
+        this.templateFileStream = templateFileStream;
+        this.destFileStream = destFileStream;
     }
 
 	/**
@@ -57,22 +66,16 @@ public class ExcelWriterHelperBySXSSF implements ExeclWriterI{
 	@Override
 	public void startWriteData(String sheetName) throws IOException {
 		    if(StringUtils.isBlank(sheetName)){
-	            sheetName = "sheet1";
+	            sheetName = defaultSheet ;
 	        }        
-	        FileInputStream fs=new FileInputStream(destFile);                
 	        // 建立工作簿和电子表格对象  
-	        XSSFWorkbook xssfWorkbook= new XSSFWorkbook(fs); // 加载excel的 工作目录  
-	        sxssfWorkbook=new SXSSFWorkbook(xssfWorkbook,rowAccessWindowSize);
+	        XSSFWorkbook xssfWorkbook= new XSSFWorkbook(this.templateFileStream); // 加载excel的 工作目录  
+	        sxssfWorkbook = new SXSSFWorkbook(xssfWorkbook,rowAccessWindowSize);
 
-	        sxssfSheet= sxssfWorkbook.getSheet(sheetName);// 获取一个工作薄对象
+	        sxssfSheet = sxssfWorkbook.getSheet(sheetName);// 获取一个工作薄对象
 	        if (sxssfSheet == null) {
-	            sxssfSheet=sxssfWorkbook.createSheet(sheetName);// 如果没有这个Sheet 创建一个
+	            sxssfSheet = sxssfWorkbook.createSheet(sheetName);// 如果没有这个Sheet 创建一个
 	        }
-	        
-	        if(null!=sxssfWorkbook.getSheet("deleteSheet1"))
-	        {//删除特定的sheet
-	            sxssfWorkbook.removeSheetAt(sxssfWorkbook.getSheetIndex("deleteSheet1"));      
-	        }   	
 	}
 	
 	@Override
@@ -85,9 +88,8 @@ public class ExcelWriterHelperBySXSSF implements ExeclWriterI{
      */
 	@Override
 	public void endWriteData() throws IOException {
-	        FileOutputStream out = new FileOutputStream(destFile);  
-	        sxssfWorkbook.write(out);
-	        out.close(); 
+	        sxssfWorkbook.write(this.destFileStream);
+	        this.destFileStream.close(); 
 	        sxssfWorkbook.dispose();
 	        System.gc();	        	        
 	}
@@ -155,6 +157,11 @@ public class ExcelWriterHelperBySXSSF implements ExeclWriterI{
 		SXSSFRow sxssRow = sxssfSheet.createRow(rowNumber);
 		SXSSFCell cell = sxssRow.createCell(columnNumber);
 		insertDataToExeclCell(data,cell);
+	}
+
+	@Override
+	public Workbook getWorkbook() {
+		return this.sxssfWorkbook;
 	}
 
 }
