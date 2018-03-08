@@ -4,10 +4,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.tingfeng.util.java.base.common.utils.string.StringJudgeUtils;
+import com.tingfeng.util.java.base.common.utils.string.StringUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.SerializeWriter;
@@ -80,11 +79,11 @@ public class HttpServletResponseUtils {
 	 * @throws IOException
 	 */
 		public static void sendText(HttpServletResponse response, String s,String ContentType, String Header, String cache,String charEncoding) throws IOException {
-			if (StringJudgeUtils.isNotEmpty(charEncoding))
+			if (StringUtils.isNotEmpty(charEncoding))
 				response.setCharacterEncoding(charEncoding);
-			if (StringJudgeUtils.isNotEmpty(ContentType))
+			if (StringUtils.isNotEmpty(ContentType))
 				response.setContentType(ContentType);
-			if (StringJudgeUtils.isNotEmpty(Header) &&StringJudgeUtils.isNotEmpty(cache))
+			if (StringUtils.isNotEmpty(Header) && StringUtils.isNotEmpty(cache))
 				response.setHeader(Header, cache);
 			response.getWriter().write(s);
 			response.getWriter().flush();
@@ -120,7 +119,8 @@ public class HttpServletResponseUtils {
 	 * @param filter 保留的需要的字段new SimplePropertyPreFilter(实体类.class,"字段名","字段名".....),或者(""字段名","字段名".....")
 	 * @throws IOException
 	 */
-		public static void sendToTextWithTing(HttpServletResponse response, Object object,SimplePropertyPreFilter filter)
+		@SuppressWarnings("unchecked")
+        public static void sendToTextWithTing(HttpServletResponse response, Object object,SimplePropertyPreFilter filter)
 				throws IOException {
 			if(object instanceof List)//如果是list类型,调用其他方法;
 				sendList(response, (List<? extends Object>) object,filter);
@@ -148,7 +148,6 @@ public class HttpServletResponseUtils {
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("text/plain");
 			response.setHeader("Cache-Control", "no-cache");
-			JSONArray jsonArray;
 			String s;
 			if(filter!=null)
 				s=JSON.toJSONString(list,filter);

@@ -267,7 +267,8 @@ public class ZipHelper {
 		 * @param destDir
 		 */
 
-		public synchronized boolean unZip(String zipfile, String destDir) {
+		@SuppressWarnings("resource")
+        public synchronized boolean unZip(String zipfile, String destDir) {
             filesSize=getAllFilesSize(new File(zipfile));
             zipUpdateCallBack.updateRadio(0);
 			destDir = destDir.endsWith("\\") ? destDir : destDir + "\\";

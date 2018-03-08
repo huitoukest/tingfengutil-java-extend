@@ -15,6 +15,7 @@ import org.hibernate.Session;
  * 通过HQL语句操作tree的工具类,此类中的方法不会管理相关事务,
  * 操作的时候,如果父节点是一个对象,可用parent.id的形式出入hql语句;
  */
+@SuppressWarnings("unchecked")
 public class TreeHelper<T>{
 	/**
 	 * 排序方式,升序还是降序
@@ -75,7 +76,8 @@ public class TreeHelper<T>{
 		 * @param sortColumns 排序使用的字段名称
 		 * @return 指定父节点下面的,下一级的子节点列表;
 		 */
-		public List<T> getSubTreeByPid(Session session,Object pidValue,OrderType orderType,String...sortColumns) {
+		@SuppressWarnings("unchecked")
+        public List<T> getSubTreeByPid(Session session,Object pidValue,OrderType orderType,String...sortColumns) {
 			String hql = null;
 			if(pidValue==null)
 			{
@@ -113,7 +115,8 @@ public class TreeHelper<T>{
 		 * @param sortColumns
 		 * @return
 		 */
-		public List<T> getSubNodeByPids(Session session,List<Object> pids,OrderType orderType,String hqlSelectString,String...sortColumns) {
+		@SuppressWarnings("unchecked")
+        public List<T> getSubNodeByPids(Session session,List<Object> pids,OrderType orderType,String hqlSelectString,String...sortColumns) {
 			if(pids==null||pids.isEmpty())
 				return new ArrayList<T>();
 			String hql = null;
@@ -137,7 +140,8 @@ public class TreeHelper<T>{
 		 * @param sortColumns
 		 * @return
 		 */
-		public List<Object> getSubPidsByPids(Session session,List<Object> pids,OrderType orderType,String hqlSelectString,String...sortColumns) {
+		@SuppressWarnings("unchecked")
+        public List<Object> getSubPidsByPids(Session session,List<Object> pids,OrderType orderType,String hqlSelectString,String...sortColumns) {
 			if(pids==null||pids.isEmpty())
 				return new ArrayList<Object>();
 			String hql = null;
@@ -162,7 +166,8 @@ public class TreeHelper<T>{
 		 * @param sortColumns
 		 * @return
 		 */
-		public List<Object> getSubIdsByPids(Session session,List<Object> pids,OrderType orderType,String hqlSelectString,String...sortColumns) {
+		@SuppressWarnings("unchecked")
+        public List<Object> getSubIdsByPids(Session session,List<Object> pids,OrderType orderType,String hqlSelectString,String...sortColumns) {
 			if(pids==null||pids.isEmpty())
 				return new ArrayList<Object>();
 			String hql = null;
@@ -190,7 +195,8 @@ public class TreeHelper<T>{
 		 * @param sortColumns
 		 * @return
 		 */
-		public List<T> getSubTreeByPid(Session session,Object pidValue,OrderType orderType,String hqlSelectString,String...sortColumns) {
+		@SuppressWarnings("unchecked")
+        public List<T> getSubTreeByPid(Session session,Object pidValue,OrderType orderType,String hqlSelectString,String...sortColumns) {
 			String hql = null;
 			if(pidValue==null)
 			{
@@ -211,7 +217,7 @@ public class TreeHelper<T>{
 		 * @param hqlSelectString 自定义搜索条件,实体使用table_替代,如 " and table_.status=1";
 		 * @return
 		 */
-		public List<Object> getAllPids(Session session,String hqlSelectString){
+        public List<Object> getAllPids(Session session,String hqlSelectString){
 			String hqlString="select distinct table_."+pidName+" from "+tableNameString+" table_ where 1=1";
 			if(hqlSelectString!=null)
 				hqlString+=hqlSelectString;
@@ -227,7 +233,6 @@ public class TreeHelper<T>{
 		 */
 		private String getOrderSortHqlString(OrderType orderType,String...sortColumns){
 			String hql="";
-			String orderContentString="";
 			if(sortColumns==null)
 				sortColumns=new String[]{idName};
 			if(sortColumns!=null){
@@ -293,8 +298,6 @@ public class TreeHelper<T>{
 			//开始过滤节点
 			for(T t:list){
 		    	try {
-		    		//Field field=cls.getDeclaredField(pidName);
-		    		//field.setAccessible(true);
 		    		Object parentObject;//=field.get(t);	
 		    		parentObject=tree.getPid(t);
 		            parentIdsList.add(parentObject);	    		
@@ -304,11 +307,7 @@ public class TreeHelper<T>{
 		    }
 			for(T t:list){
 				try{
-					//Field field=cls.getDeclaredField(idName);
-		           // field.setAccessible(true);
-		            Object idObject;//field.get(t);
-		            idObject=tree.getId(t);
-		            if(nodeType.equals(NodeType.Leaf)&&!parentIdsList.contains(t))
+					if(nodeType.equals(NodeType.Leaf)&&!parentIdsList.contains(t))
 					{
 		            	listResult.add(t);
 		            }else if(nodeType.equals(NodeType.Parent)&&parentIdsList.contains(t)){
@@ -326,12 +325,12 @@ public class TreeHelper<T>{
 			if(nodeType.equals(NodeType.All))
 			{
 				
-				T t=this.getNodeById(session,pidValue,OrderType.ASC,hqlSelectString,null);
+				T t= this.getNodeById(session,pidValue,OrderType.ASC,hqlSelectString,null);
 				listResult.add(t);
 			}else{
 			     Long count=getCountOfSubNodeByPid(session, pidValue, hqlSelectString);
 			     if((nodeType.equals(NodeType.Leaf)&&count<1)||(nodeType.equals(NodeType.Parent)&&count>0)){
-			    	 T t=this.getNodeById(session,pidValue,OrderType.ASC,hqlSelectString,null);
+			    	 T t= this.getNodeById(session,pidValue,OrderType.ASC,hqlSelectString,null);
 			    	 listResult.add(t);
 			     }
 			}

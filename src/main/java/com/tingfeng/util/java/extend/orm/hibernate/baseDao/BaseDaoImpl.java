@@ -86,7 +86,8 @@ public abstract class BaseDaoImpl extends SuperBaseDaoImpl{
 	 * @param maxRowsPerPage
 	 * @return 此分页适用于JqueryEasyUI的json格式数据
 	 */
-	public <T> MyPager<T> findPager(String hql,Map<String, Object> params,String tableAlias,MyPage page,Integer maxRowsPerPage){
+	@SuppressWarnings("unchecked")
+    public <T> MyPager<T> findPager(String hql,Map<String, Object> params,String tableAlias,MyPage page,Integer maxRowsPerPage){
 	        String countHql="select count(*) "+hql.trim().substring(hql.toLowerCase(Locale.ENGLISH).indexOf("from"));	
 	        Long count=super.getCountByHql(countHql, params);
 			MyPager<T> pager=new MyPager<T>();

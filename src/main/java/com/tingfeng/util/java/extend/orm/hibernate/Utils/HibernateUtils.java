@@ -6,7 +6,8 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
-public class HibernateUtil {
+@SuppressWarnings("deprecation")
+public class HibernateUtils {
 	private final static SessionFactory FACTORY = buildSessionFactory();
 
 	private static SessionFactory buildSessionFactory() {

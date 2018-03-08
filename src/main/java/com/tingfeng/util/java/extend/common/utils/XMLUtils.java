@@ -34,7 +34,7 @@ public class XMLUtils {
 		// this.getClass().getResource("/").getPath()+SAVE_XMLFILE_PATH;
 		// URL xmlpath =
 		// this.getClass().getClassLoader().getResource("Provinces.xml");
-		this.SAVE_XMLFILE_PATH = this.getClass().getResource("/").getPath() + "resource/";
+		XMLUtils.SAVE_XMLFILE_PATH = this.getClass().getResource("/").getPath() + "resource/";
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class XMLUtils {
 	 */
 	public Document parse(String xmlFile) throws DocumentException, FileNotFoundException {
 		SAXReader reader = new SAXReader();
-		String filepath = this.SAVE_XMLFILE_PATH + xmlFile;
+		String filepath = XMLUtils.SAVE_XMLFILE_PATH + xmlFile;
 		Document doc = reader.read(new File(filepath));
 		return doc;
 	}
@@ -88,7 +88,7 @@ public class XMLUtils {
 				Attribute attribute = attributes.get(i);
 				if ("ID".equals(attribute.getName())) {
 
-					Map map = new HashMap<String, Object>();
+					Map<String,Object> map = new HashMap<>();
 					map.put("ID", element.attributeValue("ID"));
 					map.put("NAME", element.getText());
 					list.add(map);
@@ -101,7 +101,8 @@ public class XMLUtils {
 		return list;
 	}
 
-	public List<?> getSubList(String fileName, String pID) {
+	@SuppressWarnings("unchecked")
+    public List<?> getSubList(String fileName, String pID) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
 			Document doc = this.parse(fileName);
@@ -119,7 +120,7 @@ public class XMLUtils {
 					Attribute attribute = attributes.get(i);
 					if ("ID".equals(attribute.getName())) {
 						if (element.attributeValue("PID").equals(pID)) {
-							Map map = new HashMap<String, Object>();
+							Map<String, Object> map = new HashMap<String, Object>();
 							map.put("ID", element.attributeValue("ID"));
 							map.put("NAME", element.getText());
 							list.add(map);
@@ -246,12 +247,13 @@ public class XMLUtils {
 	 * @param doc
 	 * @throws IOException
 	 */
-	public void updateDocument(Document doc) throws IOException {
+	@SuppressWarnings("unchecked")
+    public void updateDocument(Document doc) throws IOException {
 
 		Element root = doc.getRootElement();
 		// System.out.println(root.asXML());
 
-		for (Iterator i = root.elementIterator(); i.hasNext();) {
+		for (Iterator<Element> i = root.elementIterator(); i.hasNext();) {
 			Element e = (Element) i.next();
 			System.out.println(e.getName());
 			System.out.println(e.getPath());

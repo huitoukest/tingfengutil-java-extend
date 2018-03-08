@@ -199,7 +199,8 @@ public class MapReduceUtils {
 			return name;
 		}
 		
-		private  void addTmpJar(String jarPath, Configuration conf) throws IOException {  
+		@SuppressWarnings("deprecation")
+        private  void addTmpJar(String jarPath, Configuration conf) throws IOException {  
 		    System.setProperty("path.separator", ":");  
 		    FileSystem fs = FileSystem.getLocal(conf);  
 		    String newJarPath = new Path(jarPath).makeQualified(fs).toString();  

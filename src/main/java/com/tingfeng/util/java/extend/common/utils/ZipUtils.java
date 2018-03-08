@@ -1,4 +1,5 @@
 package com.tingfeng.util.java.extend.common.utils;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -159,18 +160,17 @@ public class ZipUtils {
 		 * 功能：解压 zip 文件，只能解压 zip 文件
 		 * @param zipfile
 		 * @param destDir
+		 * @throws IOException 
 		 */
 
-		public static void unZip(String zipfile, String destDir) {
+		public static void unZip(String zipfile, String destDir) throws IOException {
 
 			destDir = destDir.endsWith("\\") ? destDir : destDir + "\\";
-
 			byte b[] = new byte[4096];
-
 			int length;
-
-			ZipFile zipFile;
-
+			ZipFile zipFile = null;
+			OutputStream outputStream = null;
+			InputStream inputStream = null;
 			try {
 
 				zipFile = new ZipFile(new File(zipfile),"UTF-8");
@@ -186,17 +186,29 @@ public class ZipUtils {
 
 							loadFile.getParentFile().mkdirs();						
 						}
-						OutputStream outputStream = new FileOutputStream(loadFile);
+						outputStream = new FileOutputStream(loadFile);
 
-						InputStream inputStream = zipFile.getInputStream(zipEntry);
+						inputStream = zipFile.getInputStream(zipEntry);
 
 						while ((length = inputStream.read(b)) > 0)
 
 							outputStream.write(b, 0, length);
 					}
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
+			}finally {
+			    try {
+    			    if(null != outputStream) {
+                            outputStream.close();
+    			    }
+    			    if(null != inputStream) {
+                        inputStream.close();
+                    }
+    			    if(null != zipFile) {
+    			        zipFile.close();
+    			    }
+			    } catch (IOException e) {
+                    e.printStackTrace();
+                }
 			}
 
 		}
