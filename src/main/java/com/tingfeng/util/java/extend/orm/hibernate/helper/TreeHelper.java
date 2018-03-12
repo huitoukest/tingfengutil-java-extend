@@ -76,7 +76,7 @@ public class TreeHelper<T>{
 		 * @param sortColumns 排序使用的字段名称
 		 * @return 指定父节点下面的,下一级的子节点列表;
 		 */
-		@SuppressWarnings("unchecked")
+		
         public List<T> getSubTreeByPid(Session session,Object pidValue,OrderType orderType,String...sortColumns) {
 			String hql = null;
 			if(pidValue==null)
