@@ -78,7 +78,7 @@ public class WebServiceUtils {
 		File file = null;
 		try {
 			FileInputStream fin = null;			
-			String uuidString = RandomUtils.getRandomLong() + "";
+			String uuidString = RandomUtils.randomLong() + "";
 			int bufferSize =1024 *500;
 			byte[] buffer = new byte[bufferSize];
 			String fileKeyName = "";
@@ -156,8 +156,7 @@ public class WebServiceUtils {
 		return s;
 	}
 	/**
-	 * 
-	 * @param conn
+	 *
 	 *            HttpURLConnection,一个连接好的Http连接,并且此方法只是post数据,不管理此连接的生命周期
 	 * @param wsdlUrl
 	 * @param namespace
